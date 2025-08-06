@@ -1,31 +1,58 @@
-const { Faker, en, de, fr, ja } = require('@faker-js/faker')
-const seedrandom = require('seedrandom')
+const { faker } = require('@faker-js/faker');
+
+function getProbabilisticCount(avg) {
+  const count = Math.floor(avg);
+  const remainder = avg - count;
+  return Math.random() < remainder ? count + 1 : count;
+}
+
+function createCoverImageUrl(title, author) {
+  return `https://picsum.photos/200/300?random=${encodeURIComponent(title + author)}`;
+}
 
 const localeMap = {
-  en_US: en,
-  de_DE: de,
-  fr_FR: fr,
-  ja_JP: ja
-}
+  'en_US': 'en',
+  'de_DE': 'de',
+  'fr_FR': 'fr',
+  'ja_JP': 'ja',
+};
 
-function generateBooks({ region, seed, avgReviews, page }) {
-  const faker = new Faker({ locale: localeMap[region] || en })
-  faker.seed(seedrandom(seed)())
+function generateBooks(region, seed, avgLikes, avgReviews, page = 1, pageSize = 20) {
+  const locale = localeMap[region] || 'en';
+  faker.locale = locale;
+  faker.seed(Number(seed) + page);
 
-  const books = []
-  const pageSize = 20
-  const start = (page - 1) * pageSize
+  const books = [];
 
-  for (let i = start; i < start + pageSize; i++) {
-    const title = faker.lorem.sentence().slice(0, -1)
-    const author = faker.person.fullName()
-    const cover = faker.image.urlPicsumPhotos({ width: 100, height: 150 })
-    const reviews = Array.from({ length: Math.floor(avgReviews) }, () => faker.lorem.sentences(1))
+  for (let i = 0; i < pageSize; i++) {
+    const index = (page - 1) * pageSize + i + 1;
 
-    books.push({ id: i + 1, title, author, cover, reviews })
+    const title = faker.book.title();
+    const author = faker.person.fullName();
+    const publisher = faker.company.name();
+    const isbn = faker.string.numeric(13);
+
+    const likes = getProbabilisticCount(avgLikes);
+    const numReviews = getProbabilisticCount(avgReviews);
+
+    const reviews = Array.from({ length: numReviews }).map(() => ({
+      reviewer: faker.person.fullName(),
+      text: faker.lorem.sentences({ min: 1, max: 3 }),
+    }));
+
+    books.push({
+      index,
+      title,
+      author,
+      publisher,
+      isbn,
+      likes,
+      reviews,
+      coverImage: createCoverImageUrl(title, author),
+    });
   }
 
-  return books
+  return books;
 }
 
-module.exports = generateBooks
+module.exports = generateBooks;

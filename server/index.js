@@ -1,21 +1,33 @@
-const express = require('express')
-const cors = require('cors')
-const generateBooks = require('./generateBookData')
+const express = require('express');
+const cors = require('cors');
+const generateBooks = require('./generateBookData');
 
-const app = express()
-app.use(cors())
+const app = express();
 
-app.get('/books', async (req, res) => {
+app.use(cors({
+  origin: '*',
+  methods: ['GET'],
+}));
+
+const PORT = process.env.PORT || 3000;
+
+app.get('/books', (req, res) => {
   try {
-    const { region = 'en_US', seed = 1, avgReviews = 1, page = 1 } = req.query
-    const books = generateBooks({ region, seed: parseInt(seed), avgReviews: parseFloat(avgReviews), page: parseInt(page) })
-    res.json(books)
-  } catch (e) {
-    res.status(500).json({ error: e.message })
-  }
-})
+    const region = req.query.region || 'en_US';
+    const seed = req.query.seed || '1';
+    const avgLikes = parseFloat(req.query.avgLikes) || 0;
+    const avgReviews = parseFloat(req.query.avgReviews) || 0;
+    const page = parseInt(req.query.page, 10) || 1;
 
-const port = process.env.PORT || 3000
-app.listen(port, () => {
-  console.log(`Backend is running on port ${port}`)
-})
+    const books = generateBooks(region, seed, avgLikes, avgReviews, page);
+
+    res.json(books);
+  } catch (error) {
+    console.error('Error generating books:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Backend is running on port ${PORT}`);
+});
