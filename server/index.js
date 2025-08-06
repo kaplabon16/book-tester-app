@@ -3,7 +3,11 @@ const cors = require('cors');
 const generateBooks = require('./generateBookData');
 
 const app = express();
-app.use(cors());
+
+app.use(cors({
+  origin: '*',
+  methods: ['GET'],
+}));
 
 const PORT = process.env.PORT || 3000;
 
