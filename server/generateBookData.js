@@ -1,12 +1,11 @@
 const { Faker } = require('@faker-js/faker')
-
-const { en, de, fr, ja } = require('@faker-js/faker/locale')
+const seedrandom = require('seedrandom')
 
 const localeMap = {
-  en_US: en,
-  de_DE: de,
-  fr_FR: fr,
-  ja_JP: ja,
+  en_US: 'en',
+  de_DE: 'de',
+  fr_FR: 'fr',
+  ja_JP: 'ja',
 }
 
 function getProbabilisticCount(avg) {
@@ -20,9 +19,8 @@ function createCoverImageUrl(title, author) {
 }
 
 function generateBooks(region, seed, avgLikes, avgReviews, page = 1, pageSize = 20) {
-  const locale = localeMap[region] || en
+  const locale = localeMap[region] || 'en'
   const faker = new Faker({ locale })
-
   faker.seed(Number(seed) + page)
 
   const books = []
