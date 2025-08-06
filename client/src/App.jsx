@@ -48,12 +48,12 @@ export default function App() {
     }
   };
 
-  // Initial fetch
+
   useEffect(() => {
     fetchBooks(true);
   }, [region, seed, avgLikes, avgReviews]);
 
-  // Infinite scroll
+
   const handleScroll = (e) => {
     const bottom =
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
@@ -73,7 +73,7 @@ export default function App() {
       onScroll={handleScroll}
     >
       <h1 className="text-2xl font-bold mb-4 text-center">
-        📚 Book Tester App
+        Book Tester App
       </h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -104,7 +104,7 @@ export default function App() {
             onClick={generateRandomSeed}
             className="mt-1 text-sm text-blue-500 underline"
           >
-            🔀 Random
+            Randomize Seed
           </button>
         </div>
 
@@ -144,7 +144,7 @@ export default function App() {
 
       {loading && (
         <div className="text-center py-4 text-blue-500 animate-pulse">
-          Loading more books...
+          Loading more books. Just wait ...
         </div>
       )}
     </div>
