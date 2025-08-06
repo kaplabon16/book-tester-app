@@ -19,8 +19,7 @@ const localeMap = {
 
 function generateBooks(region, seed, avgLikes, avgReviews, page = 1, pageSize = 20) {
   const locale = localeMap[region] || 'en';
-  const localFaker = faker.locale === locale ? faker : faker.locale = locale;
-
+  faker.locale = locale;
   faker.seed(Number(seed) + page);
 
   const books = [];
@@ -28,7 +27,7 @@ function generateBooks(region, seed, avgLikes, avgReviews, page = 1, pageSize = 
   for (let i = 0; i < pageSize; i++) {
     const index = (page - 1) * pageSize + i + 1;
 
-    const title = faker.lorem.words({ min: 2, max: 6 });
+    const title = faker.book.title();
     const author = faker.person.fullName();
     const publisher = faker.company.name();
     const isbn = faker.string.numeric(13);
