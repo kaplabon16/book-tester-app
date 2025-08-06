@@ -17,7 +17,7 @@ export default function App() {
 
   const fetchBooks = async (reset = false) => {
     setLoading(true)
-    const res = await axios.get("https://book-tester-backend.onrender.com/books", {
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/books`, {
       params: { region, seed, avgLikes, avgReviews, page },
     })
     const newBooks = res.data
