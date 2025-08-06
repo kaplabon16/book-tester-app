@@ -1,31 +1,21 @@
-import express from 'express'
-import cors from 'cors'
-import dotenv from 'dotenv'
-import { generateBooks } from './generateBookData.js'
-
-dotenv.config()
+const express = require('express')
+const cors = require('cors')
+const generateBooks = require('./generateBookData')
 
 const app = express()
-const port = process.env.PORT || 3000
-
 app.use(cors())
 
-app.get('/books', (req, res) => {
+app.get('/books', async (req, res) => {
   try {
-    const region = req.query.region || 'en_US'
-    const seed = req.query.seed || '42'
-    const avgLikes = parseFloat(req.query.avgLikes || '0')
-    const avgReviews = parseFloat(req.query.avgReviews || '0')
-    const page = parseInt(req.query.page || '1')
-
-    const books = generateBooks({ region, seed, avgLikes, avgReviews, page })
-
-    res.json({ books })
-  } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' })
+    const { region = 'en_US', seed = 1, avgReviews = 1, page = 1 } = req.query
+    const books = generateBooks({ region, seed: parseInt(seed), avgReviews: parseFloat(avgReviews), page: parseInt(page) })
+    res.json(books)
+  } catch (e) {
+    res.status(500).json({ error: e.message })
   }
 })
 
+const port = process.env.PORT || 3000
 app.listen(port, () => {
   console.log(`Backend is running on port ${port}`)
 })

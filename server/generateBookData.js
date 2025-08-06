@@ -1,5 +1,5 @@
-import { Faker, en, de, fr, ja } from '@faker-js/faker'
-import seedrandom from 'seedrandom'
+const { Faker, en, de, fr, ja } = require('@faker-js/faker')
+const seedrandom = require('seedrandom')
 
 const localeMap = {
   en_US: en,
@@ -8,7 +8,7 @@ const localeMap = {
   ja_JP: ja
 }
 
-export function generateBooks({ region, seed, avgLikes, avgReviews, page }) {
+function generateBooks({ region, seed, avgReviews, page }) {
   const faker = new Faker({ locale: localeMap[region] || en })
   faker.seed(seedrandom(seed)())
 
@@ -20,11 +20,12 @@ export function generateBooks({ region, seed, avgLikes, avgReviews, page }) {
     const title = faker.lorem.sentence().slice(0, -1)
     const author = faker.person.fullName()
     const cover = faker.image.urlPicsumPhotos({ width: 100, height: 150 })
-    const likes = Math.floor(avgLikes * 10 + faker.number.int({ min: 0, max: 20 }))
     const reviews = Array.from({ length: Math.floor(avgReviews) }, () => faker.lorem.sentences(1))
 
-    books.push({ id: i + 1, title, author, cover, likes, reviews })
+    books.push({ id: i + 1, title, author, cover, reviews })
   }
 
   return books
 }
+
+module.exports = generateBooks
