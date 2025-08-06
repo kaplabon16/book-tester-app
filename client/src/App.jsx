@@ -17,7 +17,8 @@ export default function App() {
 
   const fetchBooks = async (reset = false) => {
     setLoading(true)
-    const res = await axios.get(`${import.meta.env.VITE_API_URL}/books`, {      params: { region, seed, avgLikes, avgReviews, page },
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/books`, {
+      params: { region, seed, avgLikes, avgReviews, page },
     })
     const newBooks = res.data
     setBooks((prev) => (reset ? newBooks : [...prev, ...newBooks]))
@@ -26,22 +27,29 @@ export default function App() {
 
   useEffect(() => {
     setPage(1)
-    fetchBooks(true) 
+    fetchBooks(true)
   }, [region, seed, avgLikes, avgReviews])
 
   useEffect(() => {
     if (page !== 1) fetchBooks(false)
   }, [page])
 
-  const handleScroll = (e) => {
-    const bottom =
-      e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 10
-    if (bottom && !loading) setPage((prev) => prev + 1)
-  }
+  useEffect(() => {
+    const handleScroll = () => {
+      const bottom =
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 10
+      if (bottom && !loading) {
+        setPage((prev) => prev + 1)
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [loading])
 
   return (
-    <div className="p-4 max-w-6xl mx-auto" onScroll={handleScroll}>
-      <h1 className="text-2xl font-bold mb-4">📚 Book Generator</h1>
+    <div className="p-4 max-w-6xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Book Generator</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <RegionSelector value={region} onChange={setRegion} />
