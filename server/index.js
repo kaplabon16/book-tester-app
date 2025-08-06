@@ -1,38 +1,37 @@
-const express = require("express");
-const cors = require("cors");
-const { Faker, en, de, fr, ja } = require("@faker-js/faker");
-
-const generateBooks = require("./generateBookData");
-
+const express = require('express');
+const cors = require('cors');
+const generateBooks = require('./generateBookData');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
-const locales = {
-  en_US: en,
-  de_DE: de,
-  fr_FR: fr,
-  ja_JP: ja,
-};
+app.get('/books', (req, res) => {
+  const {
+    region = 'en_US',
+    seed = '1',
+    avgLikes = '0',
+    avgReviews = '0',
+    page = '1'
+  } = req.query;
 
-app.get("/books", (req, res) => {
-  const { region, seed, avgLikes, avgReviews, page = 1 } = req.query;
-
-  const books = generateBooks(
-    region || "en_US",
-    seed || "1",
-    parseFloat(avgLikes) || 0,
-    parseFloat(avgReviews) || 0,
-    parseInt(page),
-    20
-  );
-
-  res.json(books);
+  try {
+    const books = generateBooks(
+      region,
+      seed,
+      parseFloat(avgLikes),
+      parseFloat(avgReviews),
+      parseInt(page, 10),
+      20
+    );
+    res.json(books);
+  } catch (err) {
+    console.error('Error generating books:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
-
 app.listen(PORT, () => {
-  console.log(`Backend is running ${PORT}`);
+  console.log(`Backend is running on port ${PORT}`);
 });

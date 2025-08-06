@@ -7,12 +7,16 @@ function getProbabilisticCount(avg) {
 }
 
 function createCoverImageUrl(title, author) {
-  const bg = faker.image.urlLoremFlickr({ category: 'books' });
-  return `${bg}?title=${encodeURIComponent(title)}&author=${encodeURIComponent(author)}`;
+  return `https://picsum.photos/200/300?random=${encodeURIComponent(title + author)}`;
 }
 
 function generateBooks(region, seed, avgLikes, avgReviews, page = 1, pageSize = 20) {
-  faker.setLocale(region); 
+  try {
+    faker.setLocale(region);
+  } catch (e) {
+    console.warn('Unsupported locale, falling back to en');
+    faker.setLocale('en');
+  }
   faker.seed(Number(seed) + page);
 
   const books = [];
@@ -30,7 +34,7 @@ function generateBooks(region, seed, avgLikes, avgReviews, page = 1, pageSize = 
 
     const reviews = Array.from({ length: numReviews }).map(() => ({
       reviewer: faker.person.fullName(),
-      text: faker.lorem.sentences({ min: 1, max: 2 }),
+      text: faker.lorem.sentences({ min: 1, max: 3 }),
     }));
 
     books.push({
