@@ -7,7 +7,7 @@ export default function SeedInput({ value, onChange }) {
   return (
     <div>
       <label className="block font-medium mb-1">Seed</label>
-      <div className="flex">
+      <div className="flex-grow">
         <input
           type="text"
           value={value}
