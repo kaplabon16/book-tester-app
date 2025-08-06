@@ -1,33 +1,69 @@
-const express = require('express')
-const cors = require('cors')
-const generateBooks = require('./generateBookData')
+// server/index.js
+const express = require("express");
+const cors = require("cors");
+const { Faker, en, de, fr, ja } = require("@faker-js/faker");
 
-const app = express()
+const app = express();
+const PORT = 3000;
 
-app.use(cors({
-  origin: '*',
-  methods: ['GET'],
-}))
+app.use(cors());
 
-const PORT = process.env.PORT || 3000
+const locales = {
+  en_US: en,
+  de_DE: de,
+  fr_FR: fr,
+  ja_JP: ja,
+};
 
-app.get('/books', (req, res) => {
-  try {
-    const region = req.query.region || 'en_US'
-    const seed = req.query.seed || '1'
-    const avgLikes = parseFloat(req.query.avgLikes) || 0
-    const avgReviews = parseFloat(req.query.avgReviews) || 0
-    const page = parseInt(req.query.page, 10) || 1
+app.get("/books", (req, res) => {
+  const {
+    region = "en_US",
+    seed = "1",
+    page = "1",
+    avgLikes = "0",
+    avgReviews = "0",
+  } = req.query;
 
-    const books = generateBooks(region, seed, avgLikes, avgReviews, page)
+  const selectedLocale = locales[region] || en;
+  const seedValue = parseInt(seed) + parseInt(page);
 
-    res.json(books)
-  } catch (error) {
-    console.error('Error generating books:', error)
-    res.status(500).json({ error: 'Internal Server Error' })
+  // Create faker instance with selected locale and seed
+  const faker = new Faker({ locale: selectedLocale });
+  faker.seed(seedValue);
+
+  const books = [];
+
+  for (let i = 0; i < 20; i++) {
+    const index = (page - 1) * 20 + i + 1;
+
+    const title = faker.lorem.words(faker.number.int({ min: 2, max: 5 }));
+    const author = faker.person.fullName();
+    const publisher = faker.company.name();
+    const isbn = faker.string.numeric(13);
+
+    const likes = Math.random() < avgLikes / 10 ? Math.ceil(avgLikes) : 0;
+    const hasReview = Math.random() < Math.min(avgReviews / 10, 1);
+    const reviews = hasReview
+      ? Array.from({ length: Math.round(avgReviews) }).map(() => ({
+          reviewer: faker.person.fullName(),
+          review: faker.lorem.sentence(),
+        }))
+      : [];
+
+    books.push({
+      index,
+      title,
+      author,
+      publisher,
+      isbn,
+      likes,
+      reviews,
+    });
   }
-})
+
+  res.json(books);
+});
 
 app.listen(PORT, () => {
-  console.log(`Backend is running on port ${PORT}`)
-})
+  console.log(`✅ Backend is running on http://localhost:${PORT}`);
+});
