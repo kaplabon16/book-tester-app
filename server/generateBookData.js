@@ -10,13 +10,17 @@ function createCoverImageUrl(title, author) {
   return `https://picsum.photos/200/300?random=${encodeURIComponent(title + author)}`;
 }
 
+const localeMap = {
+  'en_US': 'en',
+  'de_DE': 'de',
+  'fr_FR': 'fr',
+  'ja_JP': 'ja',
+};
+
 function generateBooks(region, seed, avgLikes, avgReviews, page = 1, pageSize = 20) {
-  try {
-    faker.setLocale(region);
-  } catch (e) {
-    console.warn('Unsupported locale, falling back to en');
-    faker.setLocale('en');
-  }
+  const locale = localeMap[region] || 'en';
+  const localFaker = faker.locale === locale ? faker : faker.locale = locale;
+
   faker.seed(Number(seed) + page);
 
   const books = [];

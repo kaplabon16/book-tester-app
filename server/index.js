@@ -25,7 +25,7 @@ app.get('/books', (req, res) => {
       parseInt(page, 10),
       20
     );
-    res.json(books);
+    res.json(books);generateBooks
   } catch (err) {
     console.error('Error generating books:', err);
     res.status(500).json({ error: 'Internal Server Error' });
