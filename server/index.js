@@ -1,4 +1,3 @@
-// server/index.js
 const express = require("express");
 const cors = require("cors");
 const { Faker, en, de, fr, ja } = require("@faker-js/faker");
@@ -27,7 +26,6 @@ app.get("/books", (req, res) => {
   const selectedLocale = locales[region] || en;
   const seedValue = parseInt(seed) + parseInt(page);
 
-  // Create faker instance with selected locale and seed
   const faker = new Faker({ locale: selectedLocale });
   faker.seed(seedValue);
 
@@ -65,5 +63,5 @@ app.get("/books", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Backend is running on http://localhost:${PORT}`);
+  console.log(`Backend is running on :${PORT}`);
 });

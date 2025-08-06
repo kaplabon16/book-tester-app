@@ -18,7 +18,7 @@ export default function SeedInput({ value, onChange }) {
           onClick={randomizeSeed}
           className="ml-2 bg-blue-500 text-white px-3 py-2 rounded"
         >
-          🔀
+          Randomize Seed
         </button>
       </div>
     </div>

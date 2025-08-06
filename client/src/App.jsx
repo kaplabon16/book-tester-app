@@ -26,7 +26,7 @@ export default function App() {
 
   useEffect(() => {
     setPage(1)
-    fetchBooks(true) // reload on param change
+    fetchBooks(true) 
   }, [region, seed, avgLikes, avgReviews])
 
   useEffect(() => {
