@@ -12,7 +12,7 @@ export default function SeedInput({ value, onChange }) {
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="flex-grow border rounded p-2"
+          className="flex-grow border rounded p-2 mb-1"
         />
         <button
           onClick={randomizeSeed}
