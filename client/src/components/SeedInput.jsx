@@ -14,8 +14,6 @@ export default function SeedInput({ value, onChange }) {
           onChange={(e) => onChange(e.target.value)}
           className="flex-grow border rounded p-2 mb-1"
         />
-        <a onClick={randomizeSeed}
-          className="ml-2 bg-blue-500 text-white px-3 py-2 rounded">Randomize Seed</a>
         <button
           onClick={randomizeSeed}
           className="ml-2 bg-blue-500 text-white px-3 py-2 rounded"
