@@ -64,5 +64,5 @@ app.get("/books", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Backend is running on http://localhost:${PORT}`);
+  console.log(`Backend is running ${PORT}`);
 });
